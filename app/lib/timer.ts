@@ -1,15 +1,22 @@
-let time: number = 5
+"use client"
+import { clear } from "console";
+import { useState,useEffect } from "react"
 
-function timer(sec: number): void {
-    let rm: number = sec
-    const intervalId: NodeJS.Timeout = setInterval( ()=>{
-        console.log(rm)
-        rm -= 1
-        if (rm === 0) {
-            clearInterval(intervalId)
-            console.log("Time's out")
-        }
-    }, 1000 )
+export function useTimer(started:boolean ,sec: number) {
+    const [count,setCount] = useState(sec)
+
+    useEffect(()=> {
+        if (!started) return;
+        const id = setInterval(()=> {
+            setCount((c) => {
+                if (c<=1) { clearInterval(id); return 0; }
+                return c-1;
+            })
+        },1000)
+
+        return () => clearInterval(id)
+    }, [started] )
+    
+    return count;
+    
 }
-
-timer(time)
